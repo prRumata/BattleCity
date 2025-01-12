@@ -51,8 +51,12 @@ int main(int argc, char** argv)
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
+    /* Take monitor resolution */
+    g_windowSizeX = glfwGetVideoMode(glfwGetPrimaryMonitor())->width;
+    g_windowSizeY = glfwGetVideoMode(glfwGetPrimaryMonitor())->height;
+
     /* Create a windowed mode window and its OpenGL context */
-    GLFWwindow* pWindow = glfwCreateWindow(g_windowSizeX, g_windowSizeY, "Battle City", nullptr, nullptr);
+    GLFWwindow* pWindow = glfwCreateWindow(g_windowSizeX, g_windowSizeY, "Battle City", glfwGetPrimaryMonitor(), nullptr);
     if (!pWindow)
     {
         std::cerr << "ERROR: glfwCreateWindow failed!" << std::endl;
@@ -76,11 +80,11 @@ int main(int argc, char** argv)
     std::cout << "Renderer: " << glGetString(GL_RENDERER) << std::endl;
     std::cout << "OpenGL version: " << glGetString(GL_VERSION) << std::endl;
 
-    glClearColor(0, 0, 0, 1);
+    glClearColor(0.15, 0.15, 0.15, 1);
 
     {
         ResourceManager resourceManager(argv[0]);
-        auto pDefaultShaderProgram = resourceManager.loadShaders("DefaultShader", "res/shaders/vertex.txt", "res/shaders/fragment.txt");
+        auto pDefaultShaderProgram = resourceManager.loadShaders("DefaultShader", "res/shaders/default.vert", "res/shaders/default.frag");
         if (!pDefaultShaderProgram)
         {
             std::cerr << "Can't create shader program: " << "DefaultShader" << std::endl;
