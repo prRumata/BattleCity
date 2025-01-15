@@ -17,13 +17,15 @@ namespace Renderer
             m_mode = GL_RGBA;
             break;
         case 3:
-            m_mode = GL_RGB;        
+            m_mode = GL_RGB;
+            break;   
         default:
             m_mode = GL_RGBA;
             break;
         }
 
         glGenTextures(1, &m_ID);
+        glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, m_ID);
         glTexImage2D(GL_TEXTURE_2D, 0, m_mode, m_width, m_height, 0, m_mode, GL_UNSIGNED_BYTE, data);
 
@@ -64,6 +66,6 @@ namespace Renderer
 
     void Texture2D::bind() const
     {
-
+        glBindTexture(GL_TEXTURE_2D, m_ID);
     }
 }
