@@ -1,6 +1,8 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include <vec2.hpp>
+#include <glm/vec2.hpp>
+#include <glm/mat4x4.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 #include <iostream>
 
@@ -10,9 +12,9 @@
 
 GLfloat point[] =
 {
-     0.0f,  0.5f, 0.0f,
-     0.5f, -0.5f, 0.0f,
-    -0.5f, -0.5f, 0.0f
+      0.0f,  250.f, 0.0f,
+     250.f, -250.f, 0.0f,
+    -250.f, -250.f, 0.0f
 };
 
 GLfloat colors[] =
@@ -100,6 +102,11 @@ int main(int argc, char** argv)
         }
 
         auto tex = resourceManager.loadTexture("DefaultTexture", "res/textures/kirpichi.png");
+        if (!tex)
+        {
+            std::cerr << "Can't loading texture: " << "DefaultTexture" << std::endl;
+            return -1;
+        }
 
         GLuint points_vbo = 0;
         glGenBuffers(1, &points_vbo);
@@ -135,6 +142,16 @@ int main(int argc, char** argv)
         pDefaultShaderProgram->use();
         pDefaultShaderProgram->setInt("tex", 0);
 
+        glm::mat4 modelMatrix_1 = glm::mat4(1.f);
+        modelMatrix_1 = glm::translate(modelMatrix_1, glm::vec3(250.f, 250.f, 0.f));
+
+        glm::mat4 modelMatrix_2 = glm::mat4(1.f);
+        modelMatrix_2 = glm::translate(modelMatrix_2, glm::vec3(static_cast<float>(g_windowSize.x) - 250.f, 250.f, 0.f));
+
+        glm::mat4 projectionMatrix = glm::ortho(0.f, static_cast<float>(g_windowSize.x), 0.f, static_cast<float>(g_windowSize.y), -100.f, 100.f);
+
+        pDefaultShaderProgram->setMatrix4("projectionMat", projectionMatrix);
+
         /* Loop until the user closes the window */
         while (!glfwWindowShouldClose(pWindow))
         {
@@ -144,6 +161,11 @@ int main(int argc, char** argv)
             pDefaultShaderProgram->use();
             glBindVertexArray(vao);
             tex->bind();
+
+            pDefaultShaderProgram->setMatrix4("modelMat", modelMatrix_1);
+            glDrawArrays(GL_TRIANGLES, 0, 3);
+
+            pDefaultShaderProgram->setMatrix4("modelMat", modelMatrix_2);
             glDrawArrays(GL_TRIANGLES, 0, 3);
 
             /* Swap front and back buffers */
