@@ -94,7 +94,7 @@ int main(int argc, char** argv)
             std::cerr << "Can't loading sprite: " << "NewSprite" << std::endl;
             return -1;
         }
-        pSprite->setPosition(glm::vec2(500, 10));
+        pSprite->setPosition(glm::vec2(500, 300));
 
         pSpriteShaderProgram->use();
         pSpriteShaderProgram->setInt("tex", 0);
